@@ -8,7 +8,7 @@ double cos(double x, double eps)
 	__asm
 	{
 		finit
-		fld		eps; st(4)
+		fld		eps
 		fld		x
 		fmul	st(0), st(0)
 		fldz 
@@ -16,7 +16,7 @@ double cos(double x, double eps)
 		fld1 
 
 		CALCULATIONS:
-		fchs // потому что знакочередуется ряд косинуса
+		fchs // ГЇГ®ГІГ®Г¬Гі Г·ГІГ® Г§Г­Г ГЄГ®Г·ГҐГ°ГҐГ¤ГіГҐГІГ±Гї Г°ГїГ¤ ГЄГ®Г±ГЁГ­ГіГ±Г 
 			fmul    st(0), st(3)
 			fld1
 			faddp   st(3), st(0)
@@ -51,10 +51,10 @@ int main()
 	printf("cos(0) = ");
 	printf("%.15lf", res1);
 	printf("\n");
-	printf("cos(pi) = "); // почти Пи 
+	printf("cos(pi) = "); // ГЇГ®Г·ГІГЁ ГЏГЁ 
 	printf("%.15lf", res2);
 	printf("\n");
-	printf("cos(2*pi) = "); // почти 2 Пи :)
+	printf("cos(2*pi) = "); // ГЇГ®Г·ГІГЁ 2 ГЏГЁ :)
 	printf("%.15lf", res3);
 	return 0;
 }
