@@ -1,60 +1,74 @@
-#include <cstdio>
-#include <stdlib.h>
+#include <iostream>
+#include <math.h>
 
-double cos(double x, double eps)
+double cos(double x, double epsilon)
 {
-	double result = 0;
+	double res = 0;
+	int buf = 0;
 
-	__asm
-	{
+	__asm {
 		finit
-		fld		eps
-		fld		x
-		fmul	st(0), st(0)
-		fldz 
+
+		fldpi
+
+		fadd st(0), st(0)
+		fld qword ptr x
+
+		fdiv st(0), st(1)
+
+		fstcw word ptr buf
+		mov bx, word ptr buf
+		or word ptr buf, 0x400
+		fldcw word ptr buf
+
+		frndint
+
+		fmul st(0), st(1)
+		fld qword ptr x
+		fsub st(0), st(1)
+		fxch st(2)
+
+		fstp st(0)
+		fstp st(0)
+
+		fmul st(0), st(0) 
+		fld qword ptr epsilon 
+		fxch st(1)
+		fldz
+
 		fld1 
 		fld1 
 
-		CALCULATIONS:
-		fchs // ïîòîìó ÷òî çíàêî÷åðåäóåòñÿ ðÿä êîñèíóñà
-			fmul    st(0), st(3)
+		CALCULATIONS :
+		fchs 
+			fmul st(0), st(3) 
+			fld1 
+			faddp st(3), st(0) 
+			fdiv st(0), st(2) 
 			fld1
-			faddp   st(3), st(0)
-			fdiv    st(0), st(2)
-			fld1
-			faddp   st(3), st(0)
-			fdiv    st(0), st(2)
+			faddp st(3), st(0) 
+			fdiv st(0), st(2) 
 
-			fadd    st(1), st(0) // sum += s[n]
+			fadd st(1), st(0)
 
-			fld     st(0)
-			fabs
-			fcomp   st(5)
-			fstsw   ax
+			fld st(0)
+			fabs 
+			fcomp st(5)
+
+			fstsw ax
 			sahf
-			ja      CALCULATIONS
 
-			fld     st(1)
-			fstp	qword ptr result
+			ja CALCULATIONS
+
+			fld st(1)
+			fstp[res]
 	}
-
-	return result;
+	return res;
 }
 
 int main()
 {
-	double res1 = cos(0, 0.001);
-	double res2 = cos(3.14159265359, 0.001);
-	double res3 = cos(6.28318530718, 0.001);
-
-
-	printf("cos(0) = ");
-	printf("%.15lf", res1);
+	double res = cos(1000000000., 0.01);
+	printf("%.10lf", res);
 	printf("\n");
-	printf("cos(pi) = "); // ïî÷òè Ïè 
-	printf("%.15lf", res2);
-	printf("\n");
-	printf("cos(2*pi) = "); // ïî÷òè 2 Ïè :)
-	printf("%.15lf", res3);
-	return 0;
 }
