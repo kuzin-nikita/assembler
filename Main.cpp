@@ -68,7 +68,7 @@ double cos(double x, double epsilon)
 
 int main()
 {
-	double res = cos(1000000000., 0.01);
+	double res = cos(1000000000.0, 0.01);
 	printf("%.10lf", res);
 	printf("\n");
 }
